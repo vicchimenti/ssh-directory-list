@@ -14,8 +14,9 @@
 #include "listdir.h"
 #include <stdio.h>
 #include <errno.h>
-#include <unistd.h>
+// #include <unistd.h>
 
+extern int errno;
 
 void
 dir_list_prog_1(char *host, char *argument)
@@ -23,6 +24,7 @@ dir_list_prog_1(char *host, char *argument)
 	CLIENT *clnt;
 	readdir_ret  *result_1;
 	nametype  readdir_1_arg;
+	namelist nl;
 
 #ifndef	DEBUG
 	clnt = clnt_create (host, DIR_LIST_PROG, DIR_LIST_VERS, "udp");
@@ -43,8 +45,14 @@ dir_list_prog_1(char *host, char *argument)
 	if (result_1 == (readdir_ret *) NULL) {
 		clnt_perror (clnt, "call failed");
 	} else {
-		printf("\nReceived echo from server: %s\n", result_1);
+		for (nl = result_1->readdir_ret_u.list;
+				nl = nl->next;) {
+					printf("\n%s\n", nl->name);
+				}
+
+		// printf("\nReceived echo from server: %s\n", result_1);
 	}
+	// xdr_free(xdr_readdir_ret, result_1);
 #ifndef	DEBUG
 	clnt_destroy (clnt);
 #endif	 /* DEBUG */
@@ -62,23 +70,25 @@ main (int argc, char *argv[])
 	}
 	host = argv[1];
 
-	// get current working directory with debugging
-	char cwd[MAXLEN];
-	if(getcwd(cwd, sizeof(cwd)) == NULL)
-		perror("getcwd() error");
-	else
-		printf("\nCurrent Working Directory: %s\n", cwd);
+	// // get current working directory with debugging
+	// char cwd[MAXLEN];
+	// if(getcwd(cwd, sizeof(cwd)) == NULL)
+	// 	perror("getcwd() error");
+	// else
+	// 	printf("\nCurrent Working Directory: %s\n", cwd);
 	
 	// check for path input in argument list
-	if (argc == 2) {
-		// call list function with current working directory
-		dir_list_prog_1(host, cwd);
-	} else if (argc == 3) {
-		// call list function with user arg
-		dir_list_prog_1 (host, argv[2]);
-	} else {
+	if (argc < 3) {
 		// post error message
 		perror("\nToo few arguments; requires two args, using default cwd\n");
+		// // call list function with current working directory
+		// dir_list_prog_1(host, cwd);
+	// } else if (argc == 3) {
+	// 	// call list function with user arg
+	// 	dir_list_prog_1 (host, argv[2]);
+	} else {
+		// call list function with user arg
+		dir_list_prog_1 (host, argv[2]);
 	}
 
 exit (0);
