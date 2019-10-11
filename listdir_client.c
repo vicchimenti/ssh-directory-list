@@ -70,12 +70,15 @@ main (int argc, char *argv[])
 		printf("\nCurrent Working Directory: %s\n", cwd);
 	
 	// check for path input in argument list
-	if (argc < 3) {
+	if (argc == 2) {
+		// call list function with current working directory
 		dir_list_prog_1(host, cwd);
-		perror("\nToo few arguments; requires two args, using default cwd\n");
-	} else {
+	} else if (argc == 3) {
 		// call list function with user arg
 		dir_list_prog_1 (host, argv[2]);
+	} else {
+		// post error message
+		perror("\nToo few arguments; requires two args, using default cwd\n");
 	}
 
 exit (0);
