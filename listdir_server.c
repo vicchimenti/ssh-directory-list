@@ -19,12 +19,15 @@
 // #include <sys/types.h>
 #include <stdio.h>
 #include <string.h>
-#include <errno.h>
+
+extern int errno;
+
 
 readdir_ret *
 readdir_1_svc(nametype *argp, struct svc_req *rqstp)
 {
 	static readdir_ret  result;
+	int errnum;
 	DIR *dirp;
 	struct dirent *dp;
 	namelist nl;
@@ -37,43 +40,28 @@ readdir_1_svc(nametype *argp, struct svc_req *rqstp)
 	// open and assign directory
 	dirp = opendir(*argp);
 	if (dirp == (DIR *) NULL) {
-		result.errno = errno;
-		return (%result);
+		errnum = errno;
+		perror("\nopendir failed\n");
 	}
-	xdr_free(xdr_readdir_result, &result);
+	// xdr_free(xdr_readdir_ret, &result);
 
-	nlp = #ret.xdr_readdir_result_u.list;
+	nlp = &result.readdir_ret_u.list;
 	while (dp = readdir(dirp)) {
 		nl = *nlp = (namenode*)
 		malloc(sizeof(namenode));
 		if (nl == (namenode*) NULL) {
-			result.errno = EAGAIN;
+			errnum = EAGAIN;
 			closedir(dirp);
 			return(&result);
 		}
-		nl->name = strdup(d->d_name);
+		nl->name = strdup(dp->d_name);
 		nlp = &nl->next;
 	}
 
 	*nlp = (namelist)NULL;
-	result.errno = 0;
+	errnum = 0;
 	closedir(dirp);
 
 
-	// if ((dirp = opendir(".")) == NULL) {
-	// 	perror ("\nopendir() error\n");
-	// 	(void) printf("Could not find client supplied directory: %s\n", *argp);
-	// } else {
-	// 	while((dp = readdir(dirp)) != NULL) {
-	// 		// debugging print
-	// 		printf("\nDirectory Entry specified by client: %s\n", dp->d_name);
-	// 		// xdr_namenode->name = dp->d_name;
-	// 		// xdr_namenode = xdr_namenode->next;
-	// 	}
-	// 	result = (readdir_ret)*dirp;
-	// 	closedir(dirp);
-	// }
-
-
-	return &result;
+	return (&result);
 }
