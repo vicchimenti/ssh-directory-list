@@ -4,7 +4,7 @@
  * Distributed Systems
  * Directory List Service - Client
  * listdir_client.c
- * Last Modified: 20191011
+ * Last Modified: 20191012
  *
  * 
  *
@@ -15,7 +15,6 @@
 #include <stdio.h>
 #include <errno.h>
 #include <rpc/rpc.h>
-// #include <unistd.h>
 
 extern int errno;
 
@@ -38,6 +37,7 @@ dir_list_prog_1(char *host, char *argument)
 	// assign arg	
 	readdir_1_arg = argument;
 	errno = 0;
+	
 	// call server
 	result_1 = readdir_1(&readdir_1_arg, clnt);
 	if (result_1 == (readdir_ret *) NULL) {
@@ -54,7 +54,6 @@ dir_list_prog_1(char *host, char *argument)
 		}
 	}
 	
-	// xdr_free(xdr_readdir_ret, result_1);
 #ifndef	DEBUG
 	clnt_freeres(clnt, (xdrproc_t)xdr_readdir_ret, (char*)result_1);
 	clnt_destroy (clnt);
