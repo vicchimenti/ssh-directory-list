@@ -33,7 +33,7 @@ readdir_1_svc(nametype *argp, struct svc_req *rqstp)
 	namelist *nlp;
 
 	// xdr_free(xdr_namenode, &xdr_namelist);
-	xdr_free((xdrproc_t)xdr_namelist,(char*)nlp);
+	// xdr_free((xdrproc_t)xdr_namelist,(char*)nlp);
 
 	// debugging print
 	printf("\nClient arg received: %s\n", *argp);
@@ -45,8 +45,7 @@ readdir_1_svc(nametype *argp, struct svc_req *rqstp)
 		perror("\nopendir failed\n");
 	}
 	// xdr_free(xdr_readdir_ret, &result);
-	xdr_free((xdrproc_t)xdr_namelist,(char*)nlp);
-
+	// xdr_free((xdrproc_t)xdr_namelist,(char*)nlp);
 
 	nlp = &result.readdir_ret_u.list;
 	while (dp = readdir(dirp)) {
@@ -64,7 +63,5 @@ readdir_1_svc(nametype *argp, struct svc_req *rqstp)
 	*nlp = (namelist)NULL;
 	errnum = 0;
 	closedir(dirp);
-
-
 	return (&result);
 }

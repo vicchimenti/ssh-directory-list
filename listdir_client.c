@@ -4,7 +4,7 @@
  * Distributed Systems
  * Directory List Service - Client
  * listdir_client.c
- * Last Modified: 20191007
+ * Last Modified: 20191011
  *
  * 
  *
@@ -38,7 +38,7 @@ dir_list_prog_1(char *host, char *argument)
 	readdir_1_arg = argument;
 
 	// debugging
-	printf("\nReady to pass arg to server: %s\n", readdir_1_arg);
+	// printf("\nReady to pass arg to server: %s\n", readdir_1_arg);
 
 	// call server
 	result_1 = readdir_1(&readdir_1_arg, clnt);
@@ -49,9 +49,8 @@ dir_list_prog_1(char *host, char *argument)
 				nl = nl->next;) {
 					printf("\n%s\n", nl->name);
 				}
-
-		// printf("\nReceived echo from server: %s\n", result_1);
 	}
+
 	// xdr_free(xdr_readdir_ret, result_1);
 	clnt_freeres(xdr_readdir_ret, result_1);
 #ifndef	DEBUG
@@ -70,23 +69,11 @@ main (int argc, char *argv[])
 		exit (1);
 	}
 	host = argv[1];
-
-	// // get current working directory with debugging
-	// char cwd[MAXLEN];
-	// if(getcwd(cwd, sizeof(cwd)) == NULL)
-	// 	perror("getcwd() error");
-	// else
-	// 	printf("\nCurrent Working Directory: %s\n", cwd);
 	
 	// check for path input in argument list
 	if (argc < 3) {
 		// post error message
-		perror("\nToo few arguments; requires two args, using default cwd\n");
-		// // call list function with current working directory
-		// dir_list_prog_1(host, cwd);
-	// } else if (argc == 3) {
-	// 	// call list function with user arg
-	// 	dir_list_prog_1 (host, argv[2]);
+		perror("\nToo few arguments; expected two args\n");
 	} else {
 		// call list function with user arg
 		dir_list_prog_1 (host, argv[2]);
