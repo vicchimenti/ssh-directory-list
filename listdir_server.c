@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <rpc/xdr.h>
+#include <rpc/rpc.h>
 
 extern int errno;
 // extern char *malloc();
@@ -35,7 +36,7 @@ readdir_1_svc(nametype *argp, struct svc_req *rqstp)
 	namelist *nlp;
 
 	// xdr_free(xdr_namenode, &xdr_namelist);
-	// xdr_free((xdrproc_t)xdr_namelist,(char*)nlp);
+	xdr_free((xdrproc_t)xdr_readdir_ret,(char*)result);
 
 	// open and assign directory
 	dirp = opendir(*argp);
