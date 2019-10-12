@@ -33,7 +33,7 @@ readdir_1_svc(nametype *argp, struct svc_req *rqstp)
 	namelist *nlp;
 
 	// xdr_free(xdr_namenode, &xdr_namelist);
-	xdr_free((xdrproc_t)xdr_namelist,(char*)nlp);
+	// xdr_free((xdrproc_t)xdr_namelist,(char*)nlp);
 
 	// open and assign directory
 	dirp = opendir(*argp);
@@ -42,7 +42,7 @@ readdir_1_svc(nametype *argp, struct svc_req *rqstp)
 		perror("\nopendir failed\n");
 	}
 	// xdr_free(xdr_readdir_ret, &result);
-	xdr_free((xdrproc_t)xdr_namelist,(char*)nlp);
+	// xdr_free((xdrproc_t)xdr_namelist,(char*)nlp);
 
 	nlp = &result.readdir_ret_u.list;
 	while (dp = readdir(dirp)) {

@@ -19,7 +19,7 @@
 extern int errno;
 
 void
-dir_list_prog_1(char *host, char *argument)
+dir_list_prog_1(char *host, char *dir)
 {
 	CLIENT *clnt;
 	readdir_ret  *result_1;
@@ -37,21 +37,28 @@ dir_list_prog_1(char *host, char *argument)
 	
 
 	// assign arg	
-	readdir_1_arg = argument;
+	readdir_1_arg = dir;
 	// call server
 	result_1 = readdir_1(&readdir_1_arg, clnt);
 	if (result_1 == (readdir_ret *) NULL) {
 		clnt_perror (clnt, "call failed");
+		exit(1);
 	} else {
-		for (nl = result_1->readdir_ret_u.list;
+		if (result_1->ernno != 0) {
+			errno = result_1->errno;
+			perror(dir);
+			exit(1);
+		} else {
+			for (nl = result_1->readdir_ret_u.list;
 				nl = nl->next;) {
 					printf("\n%s\n", nl->name);
 				}
+		}
 	}
 
 
 	// xdr_free(xdr_readdir_ret, result_1);
-	clnt_freeres(xdr_readdir_ret, result_1);
+	// clnt_freeres(clnt, xdrproc_t, *result_1);
 #ifndef	DEBUG
 	clnt_destroy (clnt);
 #endif	 /* DEBUG */
@@ -61,7 +68,7 @@ dir_list_prog_1(char *host, char *argument)
 int
 main (int argc, char *argv[])
 {
-	
+
 	// create host info
 	char *host;
 	if (argc < 2) {
