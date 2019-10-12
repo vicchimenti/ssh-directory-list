@@ -56,7 +56,7 @@ dir_list_prog_1(char *host, char *argument)
 	
 	// xdr_free(xdr_readdir_ret, result_1);
 #ifndef	DEBUG
-	clnt_freeres(clnt, xdr_readdir_ret, result_1);
+	clnt_freeres(clnt, (xdrproc_t)xdr_readdir_ret, (char*)result_1);
 	clnt_destroy (clnt);
 #endif	 /* DEBUG */
 }
