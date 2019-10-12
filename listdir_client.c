@@ -47,6 +47,7 @@ dir_list_prog_1(char *host, char *argument)
 			perror(argument);
 			exit(1);
 		} else {
+			// print server response
 			for (nl = result_1->readdir_ret_u.list;
 				nl = nl->next;) {
 					printf("\n%s\n", nl->name);
