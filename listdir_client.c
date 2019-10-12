@@ -14,6 +14,7 @@
 #include "listdir.h"
 #include <stdio.h>
 #include <errno.h>
+#include <rpc/rpc.h>
 // #include <unistd.h>
 
 extern int errno;
@@ -54,8 +55,8 @@ dir_list_prog_1(char *host, char *argument)
 	}
 	
 	// xdr_free(xdr_readdir_ret, result_1);
-	// clnt_freeres(xdr_readdir_ret, result_1);
 #ifndef	DEBUG
+	clnt_freeres(clnt, xdr_readdir_ret, result_1);
 	clnt_destroy (clnt);
 #endif	 /* DEBUG */
 }
