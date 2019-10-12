@@ -19,13 +19,12 @@
 extern int errno;
 
 void
-dir_list_prog_1(char *host, char *dir)
+dir_list_prog_1(char *host, char *argument)
 {
 	CLIENT *clnt;
 	readdir_ret  *result_1;
 	nametype  readdir_1_arg;
 	namelist nl;
-
 
 #ifndef	DEBUG
 	clnt = clnt_create (host, DIR_LIST_PROG, DIR_LIST_VERS, "udp");
@@ -35,18 +34,16 @@ dir_list_prog_1(char *host, char *dir)
 	}
 #endif	/* DEBUG */
 	
-
 	// assign arg	
-	readdir_1_arg = dir;
+	readdir_1_arg = argument;
+	errno = 0;
 	// call server
 	result_1 = readdir_1(&readdir_1_arg, clnt);
 	if (result_1 == (readdir_ret *) NULL) {
 		clnt_perror (clnt, "call failed");
-		exit(1);
 	} else {
-		if (result_1->ernno != 0) {
-			errno = result_1->errno;
-			perror(dir);
+		if (errno != 0) {
+			perror(argument);
 			exit(1);
 		} else {
 			for (nl = result_1->readdir_ret_u.list;
@@ -55,10 +52,9 @@ dir_list_prog_1(char *host, char *dir)
 				}
 		}
 	}
-
-
+	
 	// xdr_free(xdr_readdir_ret, result_1);
-	// clnt_freeres(clnt, xdrproc_t, *result_1);
+	// clnt_freeres(xdr_readdir_ret, result_1);
 #ifndef	DEBUG
 	clnt_destroy (clnt);
 #endif	 /* DEBUG */
@@ -68,7 +64,6 @@ dir_list_prog_1(char *host, char *dir)
 int
 main (int argc, char *argv[])
 {
-
 	// create host info
 	char *host;
 	if (argc < 2) {
@@ -77,11 +72,10 @@ main (int argc, char *argv[])
 	}
 	host = argv[1];
 	
-
 	// check for path input in argument list
 	if (argc < 3) {
 		// post error message
-		perror("\nToo few arguments; expected two args\n");
+		perror("\nToo few arguments; requires two args, using default cwd\n");
 	} else {
 		// call list function with user arg
 		dir_list_prog_1 (host, argv[2]);
@@ -89,3 +83,4 @@ main (int argc, char *argv[])
 
 exit (0);
 }
+

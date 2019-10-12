@@ -17,9 +17,11 @@
 #include <dirent.h>
 #include <stdio.h>
 #include <string.h>
-#include<rpc/xdr.h>
+#include <rpc/xdr.h>
 
 extern int errno;
+// extern char *malloc();
+// extern char *strdup();
 
 
 readdir_ret *
