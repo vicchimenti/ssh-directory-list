@@ -36,7 +36,7 @@ readdir_1_svc(nametype *argp, struct svc_req *rqstp)
 	// xdr_free((xdrproc_t)xdr_namelist,(char*)nlp);
 
 	// debugging print
-	printf("\nClient arg received: %s\n", *argp);
+	// printf("\nClient arg received: %s\n", *argp);
 
 	// open and assign directory
 	dirp = opendir(*argp);
