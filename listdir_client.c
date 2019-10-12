@@ -26,6 +26,7 @@ dir_list_prog_1(char *host, char *argument)
 	nametype  readdir_1_arg;
 	namelist nl;
 
+
 #ifndef	DEBUG
 	clnt = clnt_create (host, DIR_LIST_PROG, DIR_LIST_VERS, "udp");
 	if (clnt == NULL) {
@@ -34,12 +35,9 @@ dir_list_prog_1(char *host, char *argument)
 	}
 #endif	/* DEBUG */
 	
+
 	// assign arg	
 	readdir_1_arg = argument;
-
-	// debugging
-	// printf("\nReady to pass arg to server: %s\n", readdir_1_arg);
-
 	// call server
 	result_1 = readdir_1(&readdir_1_arg, clnt);
 	if (result_1 == (readdir_ret *) NULL) {
@@ -51,8 +49,9 @@ dir_list_prog_1(char *host, char *argument)
 				}
 	}
 
+
 	// xdr_free(xdr_readdir_ret, result_1);
-	// clnt_freeres(xdr_readdir_ret, result_1);
+	clnt_freeres(xdr_readdir_ret, result_1);
 #ifndef	DEBUG
 	clnt_destroy (clnt);
 #endif	 /* DEBUG */
@@ -62,6 +61,7 @@ dir_list_prog_1(char *host, char *argument)
 int
 main (int argc, char *argv[])
 {
+	
 	// create host info
 	char *host;
 	if (argc < 2) {
@@ -70,6 +70,7 @@ main (int argc, char *argv[])
 	}
 	host = argv[1];
 	
+
 	// check for path input in argument list
 	if (argc < 3) {
 		// post error message
