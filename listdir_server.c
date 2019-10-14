@@ -29,8 +29,8 @@ readdir_1_svc(nametype *argp, struct svc_req *rqstp)
 	int errnum;
 	DIR *dirp;
 	struct dirent *dp;
-	namelist nl;
-	namelist *nlp;
+	namelist nl = NULL;
+	namelist *nlp = NULL;
 
 	// open and assign directory
 	dirp = opendir(*argp);
@@ -39,11 +39,12 @@ readdir_1_svc(nametype *argp, struct svc_req *rqstp)
 		perror("\nopendir failed\n");
 	}
 
+	// xdr_free(xdr_readdir_result, &result);
+
 	// stream directory and assign linked list
 	nlp = &result.readdir_ret_u.list;
 	while (dp = readdir(dirp)) {
-		nl = *nlp = (namenode*)
-		malloc(sizeof(namenode));
+		nl = *nlp = (namenode*)malloc(sizeof(namenode));
 		if (nl == (namenode*) NULL) {
 			errnum = EAGAIN;
 			closedir(dirp);
@@ -55,7 +56,14 @@ readdir_1_svc(nametype *argp, struct svc_req *rqstp)
 
 	// close directory and return result
 	*nlp = (namelist)NULL;
+	nl = NULL;
 	errnum = 0;
 	closedir(dirp);
+
+	// free memory
+	done:
+	 	(void)xdr_free((xdrproc_t)xdr_namelist,(char*)nlp);
+	done_no_free:
+	
 	return (&result);
 }
