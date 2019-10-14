@@ -39,8 +39,6 @@ readdir_1_svc(nametype *argp, struct svc_req *rqstp)
 		perror("\nopendir failed\n");
 	}
 
-	// xdr_free(xdr_readdir_result, &result);
-
 	// stream directory and assign linked list
 	nlp = &result.readdir_ret_u.list;
 	while (dp = readdir(dirp)) {
