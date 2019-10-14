@@ -4,7 +4,7 @@
  * Distributed Systems
  * Directory List Service - Server
  * listdir_server.c
- * Last Modified: 20191012
+ * Last Modified: 20191013
  *
  *
  *
@@ -56,7 +56,6 @@ readdir_1_svc(nametype *argp, struct svc_req *rqstp)
 
 	// close directory and return result
 	*nlp = (namelist)NULL;
-	nl = NULL;
 	errnum = 0;
 	closedir(dirp);
 
